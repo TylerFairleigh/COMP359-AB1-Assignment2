@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://db48fk00ova3o"]
+
+[ext_resource type="Script" path="res://scenes/match.gd" id="1_3qo8x"]
+[ext_resource type="Texture2D" uid="uid://oda63oj00rj2" path="res://assets/match.png" id="2_26h5d"]
+
+[node name="Match" type="PanelContainer"]
+custom_minimum_size = Vector2(32, 50)
+offset_right = 32.0
+offset_bottom = 32.0
+script = ExtResource("1_3qo8x")
+
+[node name="MatchSprite" type="TextureRect" parent="."]
+layout_mode = 2
+texture = ExtResource("2_26h5d")
+stretch_mode = 3
+
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
