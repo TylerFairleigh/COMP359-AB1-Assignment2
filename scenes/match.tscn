@@ -1,12 +1,20 @@
-[gd_scene load_steps=3 format=3 uid="uid://db48fk00ova3o"]
+[gd_scene load_steps=4 format=3 uid="uid://db48fk00ova3o"]
 
 [ext_resource type="Script" path="res://scenes/match.gd" id="1_3qo8x"]
 [ext_resource type="Texture2D" uid="uid://oda63oj00rj2" path="res://assets/match.png" id="2_26h5d"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_1b4wk"]
+bg_color = Color(0.0941176, 0.0941176, 0.0941176, 0.117647)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
 
 [node name="Match" type="PanelContainer"]
 custom_minimum_size = Vector2(32, 50)
 offset_right = 32.0
 offset_bottom = 32.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_1b4wk")
 script = ExtResource("1_3qo8x")
 
 [node name="MatchSprite" type="TextureRect" parent="."]
@@ -14,4 +22,6 @@ layout_mode = 2
 texture = ExtResource("2_26h5d")
 stretch_mode = 3
 
+[connection signal="gui_input" from="." to="." method="_on_gui_input"]
 [connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]
