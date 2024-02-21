@@ -55,11 +55,11 @@ func _process(_delta):
 		else:
 			# opponent's turn to take matches
 			print("Opponent's turn")
-			_get_xor(gameArray)
+			_ai_make_choice(gameArray)
 			currentTurn = 0
 			return
 
-func _get_xor(array):
+func _ai_make_choice(array):
 	var nimSum = _get_nim_sum(array)
 	
 	# If only one pile is left, in order guarantee a win, the opponent needs to take all matches except the last one
