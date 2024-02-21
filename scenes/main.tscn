@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://dxuoc1fec7hi5"]
+[gd_scene load_steps=3 format=3 uid="uid://dxuoc1fec7hi5"]
 
 [ext_resource type="PackedScene" uid="uid://bx6co1v284cd3" path="res://scenes/match_view.tscn" id="1_crgk3"]
+[ext_resource type="Script" path="res://GameLogic.gd" id="2_dvph6"]
 
 [node name="main" type="Node2D"]
 
@@ -12,3 +13,6 @@ color = Color(0.121569, 0.121569, 0.121569, 1)
 metadata/_edit_lock_ = true
 
 [node name="matches" parent="." instance=ExtResource("1_crgk3")]
+
+[node name="Node" type="Node" parent="."]
+script = ExtResource("2_dvph6")
