@@ -9,5 +9,6 @@ func _on_mouse_exited():
 	set_modulate(regular)
 
 func _on_gui_input(event):
+	get_tree().call_group("match_group", "_on_match_pressed")
 	if event.is_pressed():
 		self.visible = false
