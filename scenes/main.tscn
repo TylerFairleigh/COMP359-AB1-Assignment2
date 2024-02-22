@@ -50,4 +50,5 @@ theme = SubResource("Theme_w1vl8")
 theme_override_styles/normal = SubResource("StyleBoxFlat_d8el3")
 text = "Finish"
 
-[connection signal="pressed" from="restart" to="matches" method="reset_ui_state"]
+[connection signal="pressed" from="restart" to="matches" method="reset_state"]
+[connection signal="pressed" from="finish" to="matches" method="_on_finish_pressed"]

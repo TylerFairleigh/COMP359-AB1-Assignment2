@@ -6,7 +6,8 @@ const match_scene = preload("res://scenes/match.tscn")
 @onready var pile_2 = $"VBoxContainer/Pile 2"
 @onready var pile_3 = $"VBoxContainer/Pile 3"
 @onready var pile_4 = $"VBoxContainer/Pile 4"
-var pile_counters = {"pile_1": 1, "pile_2": 2, "pile_3": 3, "pile_4": 5}
+@onready var finish = $"../finish"
+var pile_counter_set = MatchController.pile_counters
 
 func _ready():
 	reset_ui_state()
@@ -26,11 +27,16 @@ func reset_ui_state():
 			# which results in godot giving another name.
 			await get_tree().create_timer(0.01).timeout
 	
-	for pile_name in pile_counters:
-		for i in range(pile_counters[pile_name]):
+	for pile_name in pile_counter_set:
+		for i in range(pile_counter_set[pile_name]):
 			var match_scene_instance = match_scene.instantiate()
 			match_scene_instance.name = "Match_%s" % (match_counter)
 			var pile_var = piles[pile_name]
 			pile_var.add_child(match_scene_instance)
 			match_counter += 1
 	self.visible = true
+
+
+func reset_state():
+	MatchController.reset_logic()
+	reset_ui_state()
