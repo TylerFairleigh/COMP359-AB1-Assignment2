@@ -4,7 +4,6 @@ var pileMin = 3
 var pileMax = 3 # Declare a strict maximum
 var matchMin = 1
 var matchMax = 8
-var random = RandomNumberGenerator.new()
 var gameArray # Keeps track of the current number of piles and matches per pile, stored in an array
 var playerTurn # Keeps track of whose turn it is, player's true if true, opponent's turn otherwise
 var ongoingGame = false
@@ -14,11 +13,11 @@ var ongoingGame = false
 # Will return an array, where each index corresponds to a pile and its value the number of matches
 func _create_game():
 	var piles = []
-	var numberOfPiles = random.randi_range(pileMin, pileMax)
+	var numberOfPiles = randi_range(pileMin, pileMax)
 	#print("Number of piles: " + numberOfPiles)
 	#piles = [numberOfPiles]
 	for pile in numberOfPiles:
-		piles.append(random.randi_range(matchMin, matchMax))
+		piles.append(randi_range(matchMin, matchMax))
 	return piles
 
 func _start_round():
@@ -36,38 +35,42 @@ func _ready():
 
 func _process(_delta):
 	if ongoingGame:
-		# Clean up array every time a pile is emptied, remove its index from the array
-		for pile in range(gameArray.size() - 1, -1, -1): # Iterates the array from end to start to avoid any index range errors
-			if gameArray[pile] == 0:
-				gameArray.remove_at(pile) # Remove empty piles from array
-		# If the array is empty, the game should be over.
-		# Whoever is supposed to make the next turn once the last match is removed is the loser.
-		if gameArray.is_empty():
-			if playerTurn:
-				print("You win!")
-			else:
-				print("You lose!")
-			ongoingGame = false
-			return
-		print("Current game space is " + str(gameArray))
+		_game_logic(gameArray)
+
+func _game_logic(array):
+	# Clean up array every time a pile is emptied, remove its index from the array
+	_shrink_array(array)
+	# If the array is empty, the game should be over.
+	# Whoever makes the last move is the winner
+	if array.is_empty():
+		ongoingGame = false
 		if playerTurn:
-			# the player's turn to take matches))
-			print("Player's turn")
-			
-			# Insert player control here and remove _random_move()
-			_player_make_choice(gameArray)
-			
-			# Remove this function once player chocie is implemented
-			_random_move(gameArray)
-			
-			playerTurn = false
-			return
+			print("You lose!")
 		else:
-			# opponent's turn to take matches
-			print("Opponent's turn")
-			_ai_make_choice(gameArray)
-			playerTurn = true
-			return
+			print("You win!")
+		return
+	print("Current game space is " + str(array))
+	if playerTurn:
+		# the player's turn to take matches))
+		print("Player's turn")
+		# Insert player control here and remove _random_move()
+		_player_make_choice(array)
+		
+		# Remove this function once player choice is implemented
+		_random_move(array)
+		
+		playerTurn = false
+	else:
+		# opponent's turn to take matches
+		print("Opponent's turn")
+		_ai_make_choice(array)
+		playerTurn = true
+
+# Function to remove indices which contain value 0
+func _shrink_array(array):
+		for pile in range(array.size() - 1, -1, -1): # Iterates the array from end to start to avoid any index range errors
+			if array[pile] == 0:
+				array.remove_at(pile) # Remove empty piles from array
 
 # Function to get the player's choice from the UI
 func _player_make_choice(array):
@@ -81,19 +84,16 @@ func _player_make_choice(array):
 	array[pile] -= toRemove
 
 func _ai_make_choice(array):
+	# Get the current nim-sum of the game space
 	var nimSum = _get_nim_sum(array)
-	# If only one pile is left, in order guarantee a win, the opponent needs to take all matches except the last one
-	if array.size() == 1 and array[0] != 1:
-		var toRemove = nimSum - 1
-		array[0] -= toRemove
-		print("Winning move: " + str(toRemove) + " matches removed from pile 1")
-		return
-	
+	# Get a possible move which will make the nim sum = 0
 	for pile in range(array.size()):
-		# Get a possible move which will make the nim sum = 0
+		# Get new nim sum after removing which would result from removing matches from pile which would be a winning move
 		var currentSum = nimSum ^ array[pile]
 		# If winning move is valid, do winning move (ie. make nim sum = 0)
 		if currentSum < array[pile]:
+			# Calculate the actual number of matches to remove to get nim-sum = 0
+			# For example, if currentSum = 0 for the pile, we should remove all matches from that pile since (array[pile] - currentSum) is simply number of matches in the pile
 			var toRemove = array[pile] - currentSum
 			if toRemove > 0: # Cannot remove 0 matches
 				array[pile] -= toRemove
@@ -114,7 +114,7 @@ func _get_nim_sum(array) -> int:
 
 # Simply chooses a random pile and chooses a random amount of matches to remove (Cannot remove 0 matches)
 func _random_move(array):
-	var index = randi() % array.size()
-	var remove = randi() % array[index] + 1
+	var index = randi_range(0, array.size() - 1) # Needs to be (array size - 1) so that it references the correct index 
+	var remove = randi_range(1, array[index]) # Calculate a random number of matches to remove, minimum number allowable to remove is 1
 	array[index] -= remove
 	print(str(remove) + " matches removed from pile " + str(index + 1))
