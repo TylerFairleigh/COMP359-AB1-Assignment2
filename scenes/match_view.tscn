@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bx6co1v284cd3"]
 
-[ext_resource type="PackedScene" uid="uid://db48fk00ova3o" path="res://scenes/match.tscn" id="2_asr44"]
+[ext_resource type="Script" path="res://scenes/match_view.gd" id="1_vmb68"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dflmr"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
@@ -11,56 +11,28 @@ offset_left = 84.0
 offset_right = 300.0
 offset_bottom = 216.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_dflmr")
+script = ExtResource("1_vmb68")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
 alignment = 1
 
 [node name="Pile 1" type="HBoxContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 alignment = 1
-
-[node name="Match_1" parent="VBoxContainer/Pile 1" instance=ExtResource("2_asr44")]
-layout_mode = 2
 
 [node name="Pile 2" type="HBoxContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 alignment = 1
-
-[node name="Match_2" parent="VBoxContainer/Pile 2" instance=ExtResource("2_asr44")]
-layout_mode = 2
-
-[node name="Match_3" parent="VBoxContainer/Pile 2" instance=ExtResource("2_asr44")]
-layout_mode = 2
 
 [node name="Pile 3" type="HBoxContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 alignment = 1
-
-[node name="Match_4" parent="VBoxContainer/Pile 3" instance=ExtResource("2_asr44")]
-layout_mode = 2
-
-[node name="Match_5" parent="VBoxContainer/Pile 3" instance=ExtResource("2_asr44")]
-layout_mode = 2
-
-[node name="Match_6" parent="VBoxContainer/Pile 3" instance=ExtResource("2_asr44")]
-layout_mode = 2
 
 [node name="Pile 4" type="HBoxContainer" parent="VBoxContainer"]
+custom_minimum_size = Vector2(0, 50)
 layout_mode = 2
 alignment = 1
-
-[node name="Match_7" parent="VBoxContainer/Pile 4" instance=ExtResource("2_asr44")]
-layout_mode = 2
-
-[node name="Match_8" parent="VBoxContainer/Pile 4" instance=ExtResource("2_asr44")]
-layout_mode = 2
-
-[node name="Match_9" parent="VBoxContainer/Pile 4" instance=ExtResource("2_asr44")]
-layout_mode = 2
-
-[node name="Match_10" parent="VBoxContainer/Pile 4" instance=ExtResource("2_asr44")]
-layout_mode = 2
-
-[node name="Match_11" parent="VBoxContainer/Pile 4" instance=ExtResource("2_asr44")]
-layout_mode = 2

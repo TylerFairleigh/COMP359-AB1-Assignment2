@@ -1,9 +1,9 @@
 extends Node
 
 var pileMin = 3
-var pileMax = 6 # Declare a strict maximum
+var pileMax = 3 # Declare a strict maximum
 var matchMin = 1
-var matchMax = 9
+var matchMax = 8
 var random = RandomNumberGenerator.new()
 var gameArray # Keeps track of the current number of piles and matches per pile, stored in an array
 var playerTurn # Keeps track of whose turn it is, player's true if true, opponent's turn otherwise
