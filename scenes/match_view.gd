@@ -11,7 +11,13 @@ var pile_counter_set = MatchController.pile_counters
 
 func _ready():
 	reset_ui_state()
-
+	
+func _process(delta):
+	if (MatchController.player_turn and MatchController.player_active):
+		finish.visible = true
+	else:
+		finish.visible = false
+ 
 func reset_ui_state():
 	# Toggling off the container which makes a more smooth
 	# reset apperance due to the time out.
@@ -38,5 +44,12 @@ func reset_ui_state():
 
 
 func reset_state():
+	MatchController.reset_player_turn()
 	MatchController.reset_logic()
 	reset_ui_state()
+
+func _on_finish_pressed():
+	MatchController.valid_match_array.clear()
+	MatchController.player_turn = false
+	MatchController.player_active = false
+	MatchController.bot_move()

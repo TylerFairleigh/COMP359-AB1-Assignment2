@@ -1,7 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://dxuoc1fec7hi5"]
+[gd_scene load_steps=8 format=3 uid="uid://dxuoc1fec7hi5"]
 
 [ext_resource type="PackedScene" uid="uid://bx6co1v284cd3" path="res://scenes/match_view.tscn" id="1_crgk3"]
 [ext_resource type="FontFile" uid="uid://d20wpwo18re0o" path="res://assets/m5x7.ttf" id="2_7oplk"]
+[ext_resource type="Script" path="res://scenes/turn_label.gd" id="3_gxuil"]
 
 [sub_resource type="Theme" id="Theme_w1vl8"]
 default_font = ExtResource("2_7oplk")
@@ -20,6 +21,9 @@ border_width_left = 1
 border_width_top = 1
 border_width_right = 1
 border_width_bottom = 1
+
+[sub_resource type="Theme" id="Theme_3e5f0"]
+default_font = ExtResource("2_7oplk")
 
 [node name="main" type="Node2D"]
 
@@ -42,6 +46,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_6wfke")
 text = "Restart"
 
 [node name="finish" type="Button" parent="."]
+visible = false
 offset_left = 289.0
 offset_top = 2.0
 offset_right = 382.0
@@ -50,5 +55,15 @@ theme = SubResource("Theme_w1vl8")
 theme_override_styles/normal = SubResource("StyleBoxFlat_d8el3")
 text = "Finish"
 
+[node name="turn_label" type="Label" parent="."]
+offset_left = 2.0
+offset_top = 201.0
+offset_right = 42.0
+offset_bottom = 216.0
+theme = SubResource("Theme_3e5f0")
+text = "Players Turn"
+script = ExtResource("3_gxuil")
+
 [connection signal="pressed" from="restart" to="matches" method="reset_state"]
 [connection signal="pressed" from="finish" to="matches" method="_on_finish_pressed"]
+[connection signal="pressed" from="finish" to="turn_label" method="label_change"]

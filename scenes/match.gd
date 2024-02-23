@@ -17,5 +17,7 @@ func _on_gui_input(event):
 	var match_number = int(match_string.split("_")[1])
 	if event.is_pressed() and (match_number in MatchController.valid_match_array):
 		self.visible = false
+		MatchController.match_pressed(match_number)
+		MatchController.player_active = true
 		MatchController.match_number = match_number
 		MatchController.make_range()
