@@ -1,9 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://dxuoc1fec7hi5"]
+[gd_scene load_steps=8 format=3 uid="uid://dxuoc1fec7hi5"]
 
 [ext_resource type="PackedScene" uid="uid://bx6co1v284cd3" path="res://scenes/match_view.tscn" id="1_crgk3"]
 [ext_resource type="FontFile" uid="uid://d20wpwo18re0o" path="res://assets/m5x7.ttf" id="2_7oplk"]
 [ext_resource type="Script" path="res://scenes/turn_label.gd" id="3_gxuil"]
-[ext_resource type="Script" path="res://GameLogic.gd" id="4_umlox"]
 
 [sub_resource type="Theme" id="Theme_w1vl8"]
 default_font = ExtResource("2_7oplk")
@@ -64,9 +63,6 @@ offset_bottom = 216.0
 theme = SubResource("Theme_3e5f0")
 text = "Players Turn"
 script = ExtResource("3_gxuil")
-
-[node name="GameLogic" type="Node" parent="."]
-script = ExtResource("4_umlox")
 
 [connection signal="pressed" from="restart" to="matches" method="reset_state"]
 [connection signal="pressed" from="finish" to="matches" method="_on_finish_pressed"]
