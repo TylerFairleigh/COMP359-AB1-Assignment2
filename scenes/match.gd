@@ -3,6 +3,7 @@ extends PanelContainer
 func _on_mouse_entered():
 	var match_string = self.name
 	var match_number = int(match_string.split("_")[1])
+	print(MatchController.valid_match_array, match_number)
 	if (match_number in MatchController.valid_match_array):
 		var hover_highlight = Color("#92ed8e")
 		set_modulate(hover_highlight)
