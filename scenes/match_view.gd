@@ -45,10 +45,5 @@ func remove_matches(pile_index:int, amount_of_matches:int):
 		if i < len(pile_node_children):
 			pile_node_children[i].visible = false
 
-func reset_state():
-	MatchController.reset_player_turn()
-	MatchController.reset_logic()
-	reset_ui_state()
-
 func toggle_finish_button(state:bool):
 	finish.visible = state
