@@ -40,10 +40,11 @@ func reset_ui_state():
 func remove_existing_matches(piles):
 	for pile in piles.values():
 		for pile_matches in pile.get_children():
-			pile_matches.queue_free()
-			# This fixes the case when the matches arent free yet
-			# which results in godot giving another name.
-			await get_tree().create_timer(0.01).timeout
+			if pile_matches != null:
+				pile_matches.queue_free()
+				# This fixes the case when the matches arent free yet
+				# which results in godot giving another name.
+				await get_tree().create_timer(0.01).timeout
 
 # Removes a select amount of matches from a pile 
 func remove_matches(pile_index:int, amount_of_matches:int):
