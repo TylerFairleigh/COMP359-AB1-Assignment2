@@ -73,7 +73,7 @@ func _ai_make_choice():
 	var nimSum = _get_nim_sum(gameArray)
 	# Get a possible move which will make the nim sum = 0
 	for pile in range(gameArray.size()):
-		if gameArray[pile] >= 0:
+		if gameArray[pile] > 0:
 			# Get new nim sum after removing which would result from removing matches from pile which would be a winning move
 			var currentSum = nimSum ^ gameArray[pile]
 			# If winning move is valid, do winning move (ie. make nim sum = 0)
@@ -101,8 +101,8 @@ func _get_nim_sum(array) -> int:
 
 # Simply chooses a random pile and chooses a random amount of matches to remove (Cannot remove 0 matches)
 func _random_move():
-	var index = -1
-	if gameArray[index] < 1:
+	var index = randi_range(0, gameArray.size() - 1)
+	while gameArray[index] < 1:
 		index = randi_range(0, gameArray.size() - 1) # Needs to be (array size - 1) so that it references the correct index 
 	var remove = randi_range(1, gameArray[index]) # Calculate a random number of matches to remove, minimum number allowable to remove is 1
 	gameArray[index] -= remove
