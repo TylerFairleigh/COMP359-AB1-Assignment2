@@ -8,3 +8,6 @@ func label_change():
 		self.text = "Players Turn"
 	else:
 		self.text = "Bot Turn"
+
+func label_update(label_update):
+	self.text = label_update

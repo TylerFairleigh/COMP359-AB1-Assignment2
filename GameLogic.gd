@@ -1,106 +1,93 @@
 extends Node
 
-var pileMin = 3
-var pileMax = 3 # Declare a strict maximum
-var matchMin = 1
-var matchMax = 8
-var gameArray # Keeps track of the current number of piles and matches per pile, stored in an array
-var playerTurn # Keeps track of whose turn it is, player's true if true, opponent's turn otherwise
-var ongoingGame = false
+var numberOfPiles:int = 4 # Number of piles (Fixed to 4 due to UI constrant)
+var matchMin:int = 1 # Min amount of matches in a pile
+var matchMax:int = 5 # Max amount of matches in a pile
+var selected_pile:int = -1 # Pile the player has currently selected
+
+var ongoingGame:bool = false # If the game is current in session and not over
+var player_turn:bool = false # Keeps track of whose turn it is, player's true if true, opponent's turn otherwise
+
+var gameArray:Array = [] # Keeps track of the current number of piles and matches per pile, stored in an array
+
+func _ready():
+	_start_round()
+	MatchUI.reset_ui_state()
+	_game_logic()
 
 # Create a game with a set number of piles and number of matches in each pile
 # The maximum values for piles and matches are declared at the top of this file
 # Will return an array, where each index corresponds to a pile and its value the number of matches
 func _create_game():
 	var piles = []
-	var numberOfPiles = randi_range(pileMin, pileMax)
-	#print("Number of piles: " + numberOfPiles)
-	#piles = [numberOfPiles]
-	for pile in numberOfPiles:
-		piles.append(randi_range(matchMin, matchMax))
+	for i in range(numberOfPiles):
+		var pile = randi_range(matchMin, matchMax)
+		piles.append(pile)
 	return piles
 
+# Starts up the game by getting all the initial settings ready
 func _start_round():
 	# Create the corresponding array for the pile and match sizes
 	gameArray = _create_game()
 	# Randomly choose who goes first
-	if randi() % 2:
-		playerTurn = true
-	else:
-		playerTurn = false
+	player_turn = randi() % 2
 	ongoingGame = true
 
-func _ready():
-	_start_round()
-
-func _process(_delta):
-	if ongoingGame:
-		_game_logic(gameArray)
-
-func _game_logic(array):
-	# Clean up array every time a pile is emptied, remove its index from the array
-	_shrink_array(array)
+func _game_logic():
+	print("Current game space is " + str(gameArray))
+	
 	# If the array is empty, the game should be over.
-	# Whoever makes the last move is the winner
-	if array.is_empty():
+	if (game_is_over()):
+		return
+	
+	# Runs the AI move logic
+	if !player_turn:
+		MatchUI.toggle_finish_button(false)
+		_ai_make_choice()
+		selected_pile = -1
+		player_turn = !player_turn
+		MatchUI.sound_effect.play()
+		if (game_is_over()):
+			MatchUI.sound_effect.pitch_scale = 0.3
+			MatchUI.sound_effect.play()
+			return
+
+# This function will run if the game is over and show the user who won.
+# Spoiler Alert: The bot will always win -_-
+func game_is_over():
+	var pile_empty_counter = 0
+	for pile in range(gameArray.size()):
+		if gameArray[pile] < 1:
+			pile_empty_counter += 1
+	if pile_empty_counter == gameArray.size():
 		ongoingGame = false
-		if playerTurn:
-			print("You lose!")
+		if player_turn:
+			MatchUI.label.label_update("You lose!")
 		else:
-			print("You win!")
-		return
-	print("Current game space is " + str(array))
-	if playerTurn:
-		# the player's turn to take matches))
-		print("Player's turn")
-		# Insert player control here and remove _random_move()
-		_player_make_choice(array)
-		
-		# Remove this function once player choice is implemented
-		_random_move(array)
-		
-		playerTurn = false
-	else:
-		# opponent's turn to take matches
-		print("Opponent's turn")
-		_ai_make_choice(array)
-		playerTurn = true
+			MatchUI.label.label_update("You win!")
+		return true
+	return false
 
-# Function to remove indices which contain value 0
-func _shrink_array(array):
-		for pile in range(array.size() - 1, -1, -1): # Iterates the array from end to start to avoid any index range errors
-			if array[pile] == 0:
-				array.remove_at(pile) # Remove empty piles from array
-
-# Function to get the player's choice from the UI
-func _player_make_choice(array):
-	var pile = -1 # initalize a value the player shouldn't be able to choose
-	# Keep prompting player to choose a pile until it's a valid choice
-	while pile > 0 or pile < gameArray.size():
-		print("Choose a pile.")
-		pile =  0 # insert function call to get player's selected pile
-		return
-	var toRemove = 0 # insert function call which returns number of matches player selected
-	array[pile] -= toRemove
-
-func _ai_make_choice(array):
+func _ai_make_choice():
 	# Get the current nim-sum of the game space
-	var nimSum = _get_nim_sum(array)
+	var nimSum = _get_nim_sum(gameArray)
 	# Get a possible move which will make the nim sum = 0
-	for pile in range(array.size()):
-		# Get new nim sum after removing which would result from removing matches from pile which would be a winning move
-		var currentSum = nimSum ^ array[pile]
-		# If winning move is valid, do winning move (ie. make nim sum = 0)
-		if currentSum < array[pile]:
-			# Calculate the actual number of matches to remove to get nim-sum = 0
-			# For example, if currentSum = 0 for the pile, we should remove all matches from that pile since (array[pile] - currentSum) is simply number of matches in the pile
-			var toRemove = array[pile] - currentSum
-			if toRemove > 0: # Cannot remove 0 matches
-				array[pile] -= toRemove
-				print("Winning move: " + str(toRemove) + " matches removed from pile " + str(pile + 1))
-				return
+	for pile in range(gameArray.size()):
+		if gameArray[pile] >= 0:
+			# Get new nim sum after removing which would result from removing matches from pile which would be a winning move
+			var currentSum = nimSum ^ gameArray[pile]
+			# If winning move is valid, do winning move (ie. make nim sum = 0)
+			if currentSum < gameArray[pile]:
+				# Calculate the actual number of matches to remove to get nim-sum = 0
+				# For example, if currentSum = 0 for the pile, we should remove all matches from that pile since (array[pile] - currentSum) is simply number of matches in the pile
+				var toRemove = gameArray[pile] - currentSum
+				if toRemove > 0: # Cannot remove 0 matches
+					MatchUI.remove_matches(pile, toRemove)
+					gameArray[pile] -= toRemove
+					MatchUI.label.label_update("AI took " + str(toRemove) + " from pile " + str(pile + 1))
+					return
 	# If in losing position, make a random move
-	_random_move(array)
+	_random_move()
 	return 
 
 # Get the current nim sum
@@ -113,8 +100,25 @@ func _get_nim_sum(array) -> int:
 	return nimSum
 
 # Simply chooses a random pile and chooses a random amount of matches to remove (Cannot remove 0 matches)
-func _random_move(array):
-	var index = randi_range(0, array.size() - 1) # Needs to be (array size - 1) so that it references the correct index 
-	var remove = randi_range(1, array[index]) # Calculate a random number of matches to remove, minimum number allowable to remove is 1
-	array[index] -= remove
-	print(str(remove) + " matches removed from pile " + str(index + 1))
+func _random_move():
+	var index = -1
+	if gameArray[index] < 1:
+		index = randi_range(0, gameArray.size() - 1) # Needs to be (array size - 1) so that it references the correct index 
+	var remove = randi_range(1, gameArray[index]) # Calculate a random number of matches to remove, minimum number allowable to remove is 1
+	gameArray[index] -= remove
+	MatchUI.remove_matches(index, remove)
+	MatchUI.label.label_update("AI took " + (str(remove)) + " from pile " + str(index + 1))
+
+# Removes the match that was pressed from the game array
+func match_pressed(match_pile:int):
+	selected_pile = match_pile
+	gameArray[match_pile] -= 1
+
+# Function that restarts the game with reseting all the state variables
+func restart_game():
+	selected_pile = -1
+	ongoingGame = false
+	player_turn = false
+	_start_round()
+	MatchUI.reset_ui_state()
+	_game_logic()

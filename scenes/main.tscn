@@ -1,9 +1,11 @@
-[gd_scene load_steps=9 format=3 uid="uid://dxuoc1fec7hi5"]
+[gd_scene load_steps=11 format=3 uid="uid://dxuoc1fec7hi5"]
 
 [ext_resource type="PackedScene" uid="uid://bx6co1v284cd3" path="res://scenes/match_view.tscn" id="1_crgk3"]
 [ext_resource type="FontFile" uid="uid://d20wpwo18re0o" path="res://assets/m5x7.ttf" id="2_7oplk"]
+[ext_resource type="Script" path="res://scenes/restart.gd" id="3_6dhs8"]
 [ext_resource type="Script" path="res://scenes/turn_label.gd" id="3_gxuil"]
-[ext_resource type="Script" path="res://GameLogic.gd" id="4_umlox"]
+[ext_resource type="Script" path="res://scenes/finish_button.gd" id="3_u11lt"]
+[ext_resource type="AudioStream" uid="uid://dxkn40twl1y2j" path="res://assets/bot_choice_sound_effect.mp3" id="6_q17ex"]
 
 [sub_resource type="Theme" id="Theme_w1vl8"]
 default_font = ExtResource("2_7oplk")
@@ -38,6 +40,7 @@ metadata/_edit_lock_ = true
 [node name="matches" parent="." instance=ExtResource("1_crgk3")]
 
 [node name="restart" type="Button" parent="."]
+visible = false
 offset_left = 2.0
 offset_top = 2.0
 offset_right = 95.0
@@ -45,6 +48,7 @@ offset_bottom = 30.0
 theme = SubResource("Theme_w1vl8")
 theme_override_styles/normal = SubResource("StyleBoxFlat_6wfke")
 text = "Restart"
+script = ExtResource("3_6dhs8")
 
 [node name="finish" type="Button" parent="."]
 visible = false
@@ -55,19 +59,21 @@ offset_bottom = 30.0
 theme = SubResource("Theme_w1vl8")
 theme_override_styles/normal = SubResource("StyleBoxFlat_d8el3")
 text = "Finish"
+script = ExtResource("3_u11lt")
 
 [node name="turn_label" type="Label" parent="."]
 offset_left = 2.0
-offset_top = 201.0
-offset_right = 42.0
+offset_top = 203.0
+offset_right = 68.0
 offset_bottom = 216.0
 theme = SubResource("Theme_3e5f0")
 text = "Players Turn"
 script = ExtResource("3_gxuil")
 
-[node name="GameLogic" type="Node" parent="."]
-script = ExtResource("4_umlox")
+[node name="bot_choice_sound_effect" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_q17ex")
+volume_db = -5.0
 
 [connection signal="pressed" from="restart" to="matches" method="reset_state"]
-[connection signal="pressed" from="finish" to="matches" method="_on_finish_pressed"]
-[connection signal="pressed" from="finish" to="turn_label" method="label_change"]
+[connection signal="pressed" from="restart" to="restart" method="_on_pressed"]
+[connection signal="pressed" from="finish" to="finish" method="_on_pressed"]
