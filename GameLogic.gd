@@ -45,9 +45,15 @@ func _game_logic():
 		# ADD IN TIMER SO ITS NOT INSTANT AND ALSO SOUND EFFECT
 		selected_pile = -1
 		player_turn = !player_turn
+		if (game_is_over()):
+			return
 
 func game_is_over():
-	if gameArray.is_empty():
+	var foo = 0
+	for pile in range(gameArray.size()):
+		if gameArray[pile] < 1:
+			foo += 1
+	if foo == gameArray.size():
 		ongoingGame = false
 		if player_turn:
 			print("You lose!")
@@ -61,18 +67,19 @@ func _ai_make_choice():
 	var nimSum = _get_nim_sum(gameArray)
 	# Get a possible move which will make the nim sum = 0
 	for pile in range(gameArray.size()):
-		# Get new nim sum after removing which would result from removing matches from pile which would be a winning move
-		var currentSum = nimSum ^ gameArray[pile]
-		# If winning move is valid, do winning move (ie. make nim sum = 0)
-		if currentSum < gameArray[pile]:
-			# Calculate the actual number of matches to remove to get nim-sum = 0
-			# For example, if currentSum = 0 for the pile, we should remove all matches from that pile since (array[pile] - currentSum) is simply number of matches in the pile
-			var toRemove = gameArray[pile] - currentSum
-			if toRemove > 0: # Cannot remove 0 matches
-				MatchUI.remove_matches(pile, toRemove)
-				gameArray[pile] -= toRemove
-				print("Winning move: " + str(toRemove) + " matches removed from pile " + str(pile + 1))
-				return
+		if gameArray[pile] >= 0:
+			# Get new nim sum after removing which would result from removing matches from pile which would be a winning move
+			var currentSum = nimSum ^ gameArray[pile]
+			# If winning move is valid, do winning move (ie. make nim sum = 0)
+			if currentSum < gameArray[pile]:
+				# Calculate the actual number of matches to remove to get nim-sum = 0
+				# For example, if currentSum = 0 for the pile, we should remove all matches from that pile since (array[pile] - currentSum) is simply number of matches in the pile
+				var toRemove = gameArray[pile] - currentSum
+				if toRemove > 0: # Cannot remove 0 matches
+					MatchUI.remove_matches(pile, toRemove)
+					gameArray[pile] -= toRemove
+					print("Winning move: " + str(toRemove) + " matches removed from pile " + str(pile + 1))
+					return
 	# If in losing position, make a random move
 	_random_move()
 	return 
@@ -88,7 +95,9 @@ func _get_nim_sum(array) -> int:
 
 # Simply chooses a random pile and chooses a random amount of matches to remove (Cannot remove 0 matches)
 func _random_move():
-	var index = randi_range(0, gameArray.size() - 1) # Needs to be (array size - 1) so that it references the correct index 
+	var index = -1
+	if gameArray[index] < 1:
+		index = randi_range(0, gameArray.size() - 1) # Needs to be (array size - 1) so that it references the correct index 
 	var remove = randi_range(1, gameArray[index]) # Calculate a random number of matches to remove, minimum number allowable to remove is 1
 	gameArray[index] -= remove
 	MatchUI.remove_matches(index, remove)
