@@ -23,10 +23,10 @@ This is done simply by using the bitwise XOR operator which is represented by "^
   
 ``` 
 func _get_nim_sum(gameArray) -> int:
-    nimSum = 0  
-    for pile in gameArray:  
-        nimSum = pile ^ nimSum  
-    return nimSum  
+	nimSum = 0  
+	for pile in gameArray:  
+		nimSum = pile ^ nimSum  
+	return nimSum  
 ```
   
 Recall that to be in a winning position we have to have a nim-sum which is non-zero as an result of our move.  
@@ -54,17 +54,17 @@ If we are able to remove that number of matches from a pile (ie. greater than ze
 
 ```
 func _ai_make_choice(array):
-    var nimSum = _get_nim_sum(array)
-        
-    for pile in range(gameArray.size()):
-        var currentSum = nimSum ^ gameArray[pile]
-        if currentSum < gameArray[pile]:
-            var toRemove = gameArray[pile] - currentSum
-            if toRemove > 0:
-                gameArray[pile] -= toRemove
-                return
-    _random_move(gameArray)
-    return 
+	var nimSum = _get_nim_sum(array)
+		
+	for pile in range(gameArray.size()):
+		var currentSum = nimSum ^ gameArray[pile]
+		if currentSum < gameArray[pile]:
+			var toRemove = gameArray[pile] - currentSum
+			if toRemove > 0:
+				gameArray[pile] -= toRemove
+				return
+	_random_move(gameArray)
+	return 
 ```
 
 # Analyzing _ai_make_choice() run-time

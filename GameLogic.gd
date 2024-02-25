@@ -1,11 +1,11 @@
 extends Node
 
-var numberOfPiles:int = 4
-var matchMin:int = 1
-var matchMax:int = 5
-var selected_pile:int = -1
+var numberOfPiles:int = 4 # Number of piles (Fixed to 4 due to UI constrant)
+var matchMin:int = 1 # Min amount of matches in a pile
+var matchMax:int = 5 # Max amount of matches in a pile
+var selected_pile:int = -1 # Pile the player has currently selected
 
-var ongoingGame:bool = false
+var ongoingGame:bool = false # If the game is current in session and not over
 var player_turn:bool = false # Keeps track of whose turn it is, player's true if true, opponent's turn otherwise
 
 var gameArray:Array = [] # Keeps track of the current number of piles and matches per pile, stored in an array
@@ -25,6 +25,7 @@ func _create_game():
 		piles.append(pile)
 	return piles
 
+# Starts up the game by getting all the initial settings ready
 func _start_round():
 	# Create the corresponding array for the pile and match sizes
 	gameArray = _create_game()
@@ -34,31 +35,36 @@ func _start_round():
 
 func _game_logic():
 	print("Current game space is " + str(gameArray))
-	print("Players turn: " + str(player_turn))
+	
 	# If the array is empty, the game should be over.
 	if (game_is_over()):
 		return
 	
+	# Runs the AI move logic
 	if !player_turn:
 		MatchUI.toggle_finish_button(false)
 		_ai_make_choice()
-		# ADD IN TIMER SO ITS NOT INSTANT AND ALSO SOUND EFFECT
 		selected_pile = -1
 		player_turn = !player_turn
+		MatchUI.sound_effect.play()
 		if (game_is_over()):
+			MatchUI.sound_effect.pitch_scale = 0.3
+			MatchUI.sound_effect.play()
 			return
 
+# This function will run if the game is over and show the user who won.
+# Spoiler Alert: The bot will always win -_-
 func game_is_over():
-	var foo = 0
+	var pile_empty_counter = 0
 	for pile in range(gameArray.size()):
 		if gameArray[pile] < 1:
-			foo += 1
-	if foo == gameArray.size():
+			pile_empty_counter += 1
+	if pile_empty_counter == gameArray.size():
 		ongoingGame = false
 		if player_turn:
-			print("You lose!")
+			MatchUI.label.label_update("You lose!")
 		else:
-			print("You win!")
+			MatchUI.label.label_update("You win!")
 		return true
 	return false
 
@@ -78,7 +84,7 @@ func _ai_make_choice():
 				if toRemove > 0: # Cannot remove 0 matches
 					MatchUI.remove_matches(pile, toRemove)
 					gameArray[pile] -= toRemove
-					print("Winning move: " + str(toRemove) + " matches removed from pile " + str(pile + 1))
+					MatchUI.label.label_update("AI took " + str(toRemove) + " from pile " + str(pile + 1))
 					return
 	# If in losing position, make a random move
 	_random_move()
@@ -101,16 +107,18 @@ func _random_move():
 	var remove = randi_range(1, gameArray[index]) # Calculate a random number of matches to remove, minimum number allowable to remove is 1
 	gameArray[index] -= remove
 	MatchUI.remove_matches(index, remove)
-	print(str(remove) + " matches removed from pile " + str(index + 1))
+	MatchUI.label.label_update("AI took " + (str(remove)) + " from pile " + str(index + 1))
 
+# Removes the match that was pressed from the game array
 func match_pressed(match_pile:int):
 	selected_pile = match_pile
 	gameArray[match_pile] -= 1
 
+# Function that restarts the game with reseting all the state variables
 func restart_game():
 	selected_pile = -1
 	ongoingGame = false
 	player_turn = false
-	MatchUI.reset_ui_state()
 	_start_round()
+	MatchUI.reset_ui_state()
 	_game_logic()
