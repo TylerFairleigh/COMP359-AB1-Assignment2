@@ -64,6 +64,9 @@ theme = SubResource("Theme_3e5f0")
 text = "Players Turn"
 script = ExtResource("3_gxuil")
 
+[node name="bot_cooldown" type="Timer" parent="."]
+wait_time = 2.0
+
 [connection signal="pressed" from="restart" to="matches" method="reset_state"]
 [connection signal="pressed" from="finish" to="matches" method="_on_finish_pressed"]
 [connection signal="pressed" from="finish" to="turn_label" method="label_change"]

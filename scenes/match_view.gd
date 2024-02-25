@@ -12,7 +12,7 @@ func _ready():
 	reset_ui_state()
 
 func _process(delta):
-	if (MatchController.player_turn and MatchController.player_active):
+	if (MatchController.player_turn and (MatchController.selected_pile != -1)):
 		finish.visible = true
 	else:
 		finish.visible = false

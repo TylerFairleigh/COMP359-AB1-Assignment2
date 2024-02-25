@@ -3,25 +3,17 @@ extends Node
 var numberOfPiles:int = 4
 var matchMin:int = 1
 var matchMax:int = 5
-var match_number:int = 0
-var match_full_count:int = 0 # Keeps track of the total number of matches in the game space
+var selected_pile:int = -1
 
 var ongoingGame:bool = false
-var player_active:bool = false
 var player_turn:bool = false # Keeps track of whose turn it is, player's true if true, opponent's turn otherwise
 
-var match_index_max:Array = [] # Keeps track of the maximum index of a match in each pile
-var valid_match_array:Array = [] # Keeps track of the valid range of matches to remove from a pile
 var gameArray:Array = [] # Keeps track of the current number of piles and matches per pile, stored in an array
 
 
 func _ready():
 	_start_round()
 	_game_logic()
-
-func _process(_delta):
-	pass
-
 
 # Create a game with a set number of piles and number of matches in each pile
 # The maximum values for piles and matches are declared at the top of this file
@@ -30,8 +22,6 @@ func _create_game():
 	var piles = []
 	for i in range(numberOfPiles):
 		var pile = randi_range(matchMin, matchMax)
-		match_full_count += pile
-		match_index_max.append(match_full_count)
 		piles.append(pile)
 	return piles
 
@@ -39,19 +29,20 @@ func _start_round():
 	# Create the corresponding array for the pile and match sizes
 	gameArray = _create_game()
 	# Randomly choose who goes first
-	player_turn = randi() % 2
+	#player_turn = randi() % 2
+	player_turn = true
 	ongoingGame = true
 
 func _game_logic():
+	print("Current game space is " + str(gameArray))
 	# Clean up array every time a pile is emptied, remove its index from the array
 	_shrink_array()
 	# If the array is empty, the game should be over.
 	if (game_is_over()):
 		return
 	
-	print("Current game space is " + str(gameArray))
 	if player_turn:
-		clear_valid_array()
+		selected_pile = -1
 	else:
 		_ai_make_choice()
 	
@@ -62,12 +53,6 @@ func _shrink_array():
 	for pile in range(gameArray.size() - 1, -1, -1): # Iterates the array from end to start to avoid any index range errors
 		if gameArray[pile] == 0:
 			gameArray.remove_at(pile) # Remove empty piles from array
-
-func clear_valid_array():
-	print("Cleared Array")
-	valid_match_array.clear()
-	for i in match_full_count:
-		valid_match_array.append(i + 1)
 
 func game_is_over():
 	if gameArray.is_empty():
@@ -113,12 +98,8 @@ func _random_move():
 	var index = randi_range(0, gameArray.size() - 1) # Needs to be (array size - 1) so that it references the correct index 
 	var remove = randi_range(1, gameArray[index]) # Calculate a random number of matches to remove, minimum number allowable to remove is 1
 	gameArray[index] -= remove
-	await get_tree().create_timer(2).timeout
 	print(str(remove) + " matches removed from pile " + str(index + 1))
 
-func make_range():
-	valid_match_array.clear()
-	for i in range(len(match_index_max) - 1):
-		if match_number > match_index_max[i] and match_number <= match_index_max[i + 1]:
-			valid_match_array = range(match_index_max[i] + 1, match_index_max[i + 1] + 1)
-			break
+func match_pressed(match_pile:int):
+	selected_pile = match_pile
+	gameArray[match_pile] -= 1
