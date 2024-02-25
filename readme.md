@@ -1,6 +1,12 @@
 
 # COMP359 - Assignment 2 - Game of Nim
 <p>This project creates the game of Nim inside of the Godot engine.<br>
+To rules are as follows:<br>
+
+> - You can only choose to remove matches from one pile per turn,
+> - You can remove as many matches as you want, but you cannot remove none,  
+> - The winner of the game is whoever made the last move (opposite of misère version).
+
 The player is pit up against a computer opponent which will choose the optimal solution.<br>
 Finding the Nim-Sum ensures victory so long as you make the nim-sum zero as a result of your move.</p>
 
@@ -53,17 +59,19 @@ If we are able to remove that number of matches from a pile (ie. greater than ze
 <p>If the opponent is unable to make a move which gets it into the winning position (exhausted the game space array), it can simply only make a move at random as there's no other way for it to make the nim-sum zero.</p>
 
 ```
-func _ai_make_choice(array):
-	var nimSum = _get_nim_sum(array)
-		
+func _ai_make_choice():
+	var nimSum = _get_nim_sum(gameArray)
 	for pile in range(gameArray.size()):
-		var currentSum = nimSum ^ gameArray[pile]
-		if currentSum < gameArray[pile]:
-			var toRemove = gameArray[pile] - currentSum
-			if toRemove > 0:
-				gameArray[pile] -= toRemove
-				return
-	_random_move(gameArray)
+		if gameArray[pile] > 0:
+			var currentSum = nimSum ^ gameArray[pile]
+			if currentSum < gameArray[pile]:
+				var toRemove = gameArray[pile] - currentSum
+				if toRemove > 0:
+					MatchUI.remove_matches(pile, toRemove)
+					gameArray[pile] -= toRemove
+					MatchUI.label.label_update("AI took " + str(toRemove) + " from pile " + str(pile + 1))
+					return
+	_random_move()
 	return 
 ```
 
@@ -74,13 +82,21 @@ The for-loop contains operations which only run constant-time. Note that if we a
 
 The random move function is as follows:
 ```
-func _random_move(array):
-	var index = randi_range(0, array.size() - 1) # Needs to be (array size - 1) so that it references the correct index 
-	var remove = randi_range(1, array[index]) # Calculate a random number of matches to remove, minimum number allowable to remove is 1
-	array[index] -= remove
-	print(str(remove) + " matches removed from pile " + str(index + 1))
+func _random_move():
+	var index = randi_range(0, gameArray.size() - 1)
+	while gameArray[index] < 1:
+		index = randi_range(0, gameArray.size() - 1) # Needs to be (array size - 1)
+	var remove = randi_range(1, gameArray[index])
+	gameArray[index] -= remove
+	MatchUI.remove_matches(index, remove)
+	MatchUI.label.label_update("AI took " + (str(remove)) + " from pile " + str(index + 1))
 ```
+
 Assuming that the random function built into Godot is constant, the result of executing this function would have a run-time complexity which is also constant.
 Finally, we can say with all of this in-mind that the run-time complexity of this algorithm is constant (<i>O(n)</i>) as the main operation involves iterating through an array of size <i>n</i>.
 </p>
 
+# References
+
+tanchongmin. (2021, April 29). Solving the Game of Nim. Retrieved from https://delvingintotech.wordpress.com/2021/04/29/solving-the-game-of-nim/  
+Godot Engine. (n.d.). Godot Engine 4.2 documentation in English. Godot Engine. https://docs.godotengine.org/en/stable/index.html
