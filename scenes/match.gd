@@ -15,6 +15,7 @@ func _on_gui_input(event):
 	if (event.is_pressed()) and (match_in_selected_pile(match_pile)):
 		self.visible = false
 		MatchController.match_pressed(match_pile)
+		MatchUI.toggle_finish_button(true)
 
 func match_in_selected_pile(match_pile_origin:int) -> bool:
 	return (match_pile_origin == MatchController.selected_pile or MatchController.selected_pile == -1)
