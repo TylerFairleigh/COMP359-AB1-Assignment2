@@ -1,3 +1,4 @@
+<img src="https://github.com/TylerFairleigh/COMP359-AB1-Assignment2/assets/60556017/08fa1226-045f-458e-bb40-d350bf90fbac" width=180 align="right" />   
 
 # COMP359 - Assignment 2 - Game of Nim
 <p>This project creates the game of Nim inside of the Godot engine.<br>
@@ -119,5 +120,6 @@ Due to the array remaining the same size no matter what, the space complexity re
 
 # References
 
-tanchongmin. (2021, April 29). Solving the Game of Nim. Retrieved from https://delvingintotech.wordpress.com/2021/04/29/solving-the-game-of-nim/  
-Godot Engine. (n.d.). Godot Engine 4.2 documentation in English. Godot Engine. https://docs.godotengine.org/en/stable/index.html
+tanchongmin. (2021, April 29). Solving the Game of Nim. Retrieved from https://delvingintotech.wordpress.com/2021/04/29/solving-the-game-of-nim/ \
+Godot Engine. (n.d.). Godot Engine 4.2 documentation in English. Godot Engine. https://docs.godotengine.org/en/stable/index.html \
+Daniel Linssen. Pixel Font. Retrieved from https://managore.itch.io/m5x7
