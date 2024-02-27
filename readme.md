@@ -90,8 +90,8 @@ func _ai_make_choice():
 <p>Analyzing this algorithm for it's run-time. We can see that our input is simply the game space array, which we can assume has size <i>n</i>.<br>
 We know that the function to find the nim-sum runs linear time.<br>
 The for-loop contains operations which only run constant-time. Note that if we are able to find a solution within the for-loop, it will return from this code block, skipping over the remainder of the function.<br>
-
-The random move function is as follows:
+  
+The random move function is as follows:</p>
 ```
 func _random_move():
 	var index = randi_range(0, gameArray.size() - 1)
@@ -103,17 +103,18 @@ func _random_move():
 	MatchUI.label.label_update("AI took " + (str(remove)) + " from pile " + str(index + 1))
 ```
 
-Assuming that the random function built into Godot is constant, the result of executing this function would have a run-time complexity which is also constant.
-Due to there being instances of where we may not need to inspect every element of the game array, possibly terminating early, we can say the for-loop will run *m* times, where 0 < *m* < *n*.<br>
-Keeping this in-mind, we can list our time complexities:
+<p>Assuming that the random function built into Godot is constant, the result of executing this function would have a run-time complexity which is also constant.<br>
+Note that there may be a possibility that the entire array will be checked for valid random indices, affecting the constant time complexity a little bit, occasionally making it linear if the entire array needs to be checked against.<br>
+Due to there being instances of where we may not need to inspect every element of the game array, possibly terminating early, we can say the for-loop will run <i>m</i> times, where 0 < <i>m</i> < <i>n</i>.<br>
+Keeping this in-mind, we can list our time complexities for the AI opponent's algorithm:</p>
 
 > - Worst-Case: *O(n)*
-> - Average-Case: *Θ(m)*
+> - Average-Case: *Θ(n)*
 > - Best-Case: *Ω(1)*
 
-The worst-case involves exhausting the game array, either making a choice at the last element of the game array, or not being in the winning position and making a random move after exhausting the for-loop. <br>
-The average-case is simply the case where we may not have to go through every element in the game array to make a choice. <br>
-The best-case is if we are able to make a winning move on the first iteration of the for-loop. <br>
+<p>The worst-case involves exhausting the game array, either making a choice at the last element of the game array, or not being in the winning position and making a random move after exhausting the for-loop. <br>
+The average-case is simply the case where we may not have to go through every element in the game array to make a choice. The nim-sum calculation still requires <i>O(n)</i>, so despite the for-loop running <i>O(m)</i>, the overall complexity is overpowered by the calculation of the nim-sum.<br>
+The best-case is if we have an input array which is empty or of length 1 and we make a winning move from the for-loop, or we make a random move (it's constant here because there's no way it can select a index which is currently invalid because while a game is ongoing, the contents of the only index cannot be 0). <br>
 
 Due to the array remaining the same size no matter what, the space complexity remains constant, thus *O(1)*.
 </p>
